@@ -1,0 +1,46 @@
+notes:
+- when offset is given as token+constant, take the offset of the *last* byte of
+  the token rather than the first when calculating the offset
+- everything is in little endian; jukebox gold was made for 8086
+
+instrument
+offset    | size     | token | description
+----------|----------|-------|--------------------------------------------------
+        0 |        3 |       | flags uuuuuuuu uuuuuuuu uuuuuuuf
+          |          |       | u - unknown
+          |          |       | f - instrument is a pcm sample. if unset, the
+          |          |       |     instrument is found in opl3.bnk (? TODO)
+        3 |       11 |       | null padded instrument name
+
+adlib instrument
+offset    | size     | token | description
+----------|----------|-------|--------------------------------------------------
+        0 |       28 |       | 0xAA repeated
+       28 |       28 |       | unknown (possibly opl3 parameters?)
+
+main header
+offset    | size     | token | description
+----------|----------|-------|--------------------------------------------------
+        0 |       27 |       | ascii signature '>>> VC2, (C) ADLIB INC <<<\x0E'
+       27 |        1 |       | always 0
+       28 |        1 |       | unknown
+       29 |        3 |       | always 0, 2, 0
+       32 |        2 |       | unknown, likely tempo?
+       34 |        1 |       | unknown
+       35 |        2 |       | always 1, 0
+       37 |        1 |       | unknown
+       38 |        2 |       | always 0
+       40 |       24 |       | unknown
+       64 |       22 |       | 0x7F repeated
+       86 |       40 |       | null padded song name
+      126 |        1 |       | unknown
+      127 |        2 |       | always 0xFFFF
+      129 |       23 |       | always 0
+      152 |        2 |       | unknown
+      154 |        2 |       | size of song data
+      156 |      274 |       | unknown
+      430 |        2 |    is | number of instruments
+      432 |  [is]*14 |    it | instrument table
+     it+1 |   itn*56 |   ait | adlib instrument table. itn is calculated as the
+          |          |       | number of instruments that do not have flag f set
+    ait+1 |

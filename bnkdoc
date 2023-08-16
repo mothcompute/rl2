@@ -1,0 +1,33 @@
+note: this is a continuation of rl2doc! see that first for more context
+
+opl3 data table entry
+offset    | size     | token | description
+----------|----------|-------|--------------------------------------------------
+        0 |       28 |       | opl3 parameters
+
+
+instrument entry
+offset    | size     | token | description
+----------|----------|-------|--------------------------------------------------
+        0 |        3 |       | ascii signature 'O3_'
+        3 |       12 |       | null padded, null terminated instrument name
+       15 |        5 |       | unknown (always 01 00 00 00 00)
+       21 |        2 |       | offset into file (inside opl3 data table)
+       23 |        2 |       | unknown (all zero)
+       25 |        2 |       | unknown (either size of this table or size of
+          |          |       | opl3 data table entry; always 28)
+       27 |        2 |       | unknown (either size of this table or size of
+          |          |       | opl3 data table entry; always 28)
+TODO: offsets are wrong! sizes are correct
+
+main header
+offset    | size     | token | description
+----------|----------|-------|--------------------------------------------------
+        0 |       30 |       | ascii signature 'Accomp. Bank, (C) AdLib Inc\x00
+          |          |       | \x01\x01'
+       31 |       10 |       | unknown (all zero)
+       41 |        2 |       | multiply by 28, then add 48 to get offset
+          |          |       | to the start of the opl3 data table
+       42 |        2 |    is | number of defined instruments
+       44 |        4 |       | unknown (all zero)
+       48 |  [is]*28 |   int | instrument name table
